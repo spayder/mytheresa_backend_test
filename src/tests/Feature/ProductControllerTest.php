@@ -1,6 +1,6 @@
 <?php
 
-it('gets a full list of product', function () {
+it('gets a full list of product and asserts correct response structure', function () {
     $response = $this->get('/products')
         ->assertOk()
         ->assertJsonCount(5);
@@ -20,8 +20,12 @@ it('gets a full list of product', function () {
     ]);
 });
 
-it('filters products by given category', function () {
-    $this->get('/products?category=boots')
+it('filters products by given category', function ($category, $expectedCount) {
+    $this->get('/products?category=' . $category)
     ->assertStatus(200)
-        ->assertJsonCount(3);
-});
+        ->assertJsonCount($expectedCount);
+})->with([
+    ['boots', 3],
+    ['sandals', 1],
+    ['sneakers', 1],
+]);
